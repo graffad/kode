@@ -5,14 +5,14 @@ import { formatDate } from "../stateManagement/functions";
 
 export default function UsersListComponent() {
   const appContext = useContext(AppContext);
-  const { users } = appContext.appState;
+  const { users, filteredUsers } = appContext.appState;
   const history = useHistory();
 
   return (
     <section className="section-users">
       <div className="container">
-        {users.length > 0
-          ? users.map((item) => (
+        {filteredUsers.length > 0
+          ? filteredUsers.map((item) => (
               <div className="users-outer" key={item.id}>
                 <div
                   className="users-inner"

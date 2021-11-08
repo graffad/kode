@@ -18,7 +18,7 @@ function formatDate(date,type="short") {
         })
         .replace("г.", "")
 
-    case "count":
+    case "count":{
       const years = new Date().getFullYear() - new Date(date).getFullYear();
       const pr = new Intl.PluralRules("ru");
       const suffixes = new Map([
@@ -29,6 +29,8 @@ function formatDate(date,type="short") {
       const rule = pr.select(years);
       const suffix = suffixes.get(rule);
       return `${years} ${suffix}`;
+    }
+
 
     default: return ""
   }
@@ -39,6 +41,34 @@ function formatDate(date,type="short") {
 
 }
 
+ const departments = [
+  ["android", "Android"],
+  ["ios", "iOS"],
+  ["design", "Дизайн"],
+  ["management", "Менеджмент"],
+  ["qa", "QA"],
+  ["back_office", "Бэк-офис"],
+  ["frontend", "Frontend"],
+  ["hr", "HR"],
+  ["pr", "PR"],
+  ["support", "Техподдержка"],
+  ["analytics", "Аналитика"],
+];
+
+function filterByDepartment(filter, users) {
+  let filteredArray;
+  if (filter === "all") {
+    filteredArray = users;
+  } else {
+    filteredArray = users.filter((item) => item.department === filter);
+  }
+  return filteredArray;
+}
+
+
+
 module.exports = {
   formatDate,
+  departments,
+  filterByDepartment
 };

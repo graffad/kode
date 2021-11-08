@@ -4,10 +4,11 @@ import { AppContext } from "../App";
 import UsersListComponent from "./UsersListComponent";
 import { ReactComponent as SearchSvg } from "../images/search.svg";
 import { ReactComponent as SortSvg } from "../images/sort.svg";
+import { departments, filterByDepartment } from "../stateManagement/functions";
 
 export default function HomePage() {
   const appContext = useContext(AppContext);
-  const { users } = appContext.appState;
+  const { users,filterState } = appContext.appState;
 
   useEffect(() => {
     (async () => {
@@ -19,6 +20,10 @@ export default function HomePage() {
           if (res?.data?.items.length > 0) {
             appContext.appDispatch({
               type: "SET_USERS",
+              payload: res?.data?.items,
+            });
+            appContext.appDispatch({
+              type: "SET_FILTERED_USERS",
               payload: res?.data?.items,
             });
           }
@@ -48,7 +53,60 @@ export default function HomePage() {
               <SortSvg />
             </button>
           </div>
-          <nav className="filters">tabs</nav>
+          <nav className="filters-outer">
+            <div className="filters-inner">
+              <input
+                checked={filterState === "all"}
+                type="radio"
+                name="department"
+                id="radio-all"
+                value="all"
+                className="filters-inner__radio"
+                onChange={() => {
+                  appContext.appDispatch({
+                    type: "SET_FILTER",
+                    payload: "all",
+                  });
+                  appContext.appDispatch({
+                    type: "SET_FILTERED_USERS",
+                    payload: filterByDepartment("all", users),
+                  });
+                }}
+              />
+              <label htmlFor="radio-all" className="filters-inner__label">
+                Все
+              </label>
+            </div>
+
+            {departments.map((item) => (
+              <div className="filters-inner" key={item[0]}>
+                <input
+                  checked={filterState === item[0]}
+                  type="radio"
+                  name="department"
+                  id={`radio-${item[0]}`}
+                  value={item[0]}
+                  className="filters-inner__radio"
+                  onChange={(event) => {
+                    appContext.appDispatch({
+                      type: "SET_FILTER",
+                      payload: item[0],
+                    });
+                    appContext.appDispatch({
+                      type: "SET_FILTERED_USERS",
+                      payload: filterByDepartment(event.target.value, users),
+                    });
+                  }}
+                />
+                <label
+                  className="filters-inner__label"
+                  htmlFor={`radio-${item[0]}`}
+                >
+                  {item[1]}
+                </label>
+              </div>
+            ))}
+          </nav>
         </div>
       </header>
       <UsersListComponent />

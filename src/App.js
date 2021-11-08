@@ -14,6 +14,8 @@ export const AppContext = React.createContext();
 const initialState = {
   userInfo: {},
   users: [],
+  filteredUsers:[],
+  filterState:"all"
 };
 
 function App() {
