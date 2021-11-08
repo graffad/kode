@@ -1,10 +1,12 @@
 import { useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { AppContext } from "../App";
 import { formatDate } from "../stateManagement/functions";
 
 export default function UsersListComponent() {
   const appContext = useContext(AppContext);
   const { users } = appContext.appState;
+  const history = useHistory();
 
   return (
     <section className="section-users">
@@ -12,7 +14,13 @@ export default function UsersListComponent() {
         {users.length > 0
           ? users.map((item) => (
               <div className="users-outer" key={item.id}>
-                <div className="users-inner">
+                <div
+                  className="users-inner"
+                  onClick={() => {
+                    appContext.appDispatch({ type: "SET_USER", payload: item });
+                    history.push(`/user/${item.id}`);
+                  }}
+                >
                   <img
                     className="users-inner__image"
                     src={item.avatarUrl}

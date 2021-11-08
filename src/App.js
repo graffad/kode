@@ -8,6 +8,7 @@ import {
 import "./App.css";
 import reducer from "./stateManagement/reducer";
 import HomePage from "./components/HomePage";
+import UserProfilePage from "./components/UserProfilePage";
 
 export const AppContext = React.createContext();
 const initialState = {
@@ -25,6 +26,9 @@ function App() {
           <Switch>
             <Route exact path="/">
               <HomePage />
+            </Route>
+            <Route path="/user/:id">
+              <UserProfilePage />
             </Route>
             <Redirect to="/" />
           </Switch>
