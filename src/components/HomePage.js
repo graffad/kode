@@ -8,7 +8,7 @@ import { departments, filterByDepartment } from "../stateManagement/functions";
 
 export default function HomePage() {
   const appContext = useContext(AppContext);
-  const { users,filterState } = appContext.appState;
+  const { users, filterState, searchState } = appContext.appState;
 
   useEffect(() => {
     (async () => {
@@ -35,6 +35,26 @@ export default function HomePage() {
     })();
   }, []);
 
+  function handleSearch(search, dataArr) {
+    // почты нет в апи = по ней не ищет
+
+    // для сохранения при переходе между страницами
+    appContext.appDispatch({
+      type: "SET_SEARCH",
+      payload: search,
+    });
+
+    const result = dataArr.filter((item) =>
+      Object.values(item).some((str) =>
+        str.toLowerCase().match(new RegExp(search.toLowerCase(), "g"))
+      )
+    );
+    appContext.appDispatch({
+      type: "SET_FILTERED_USERS",
+      payload: result,
+    });
+  }
+
   return (
     <>
       <header className="header">
@@ -45,9 +65,16 @@ export default function HomePage() {
               <SearchSvg />
             </div>
             <input
+              value={searchState}
               className="search__input"
               type="search"
               placeholder="Введи имя, тег, почту..."
+              onChange={(event) => {
+                handleSearch(
+                  event.target.value,
+                  filterByDepartment(filterState, users)
+                );
+              }}
             />
             <button className="button-open-sort" type="button">
               <SortSvg />
@@ -67,10 +94,11 @@ export default function HomePage() {
                     type: "SET_FILTER",
                     payload: "all",
                   });
-                  appContext.appDispatch({
-                    type: "SET_FILTERED_USERS",
-                    payload: filterByDepartment("all", users),
-                  });
+                  // фильтрует по состоянию поиска + департамент
+                  handleSearch(
+                    searchState,
+                    filterByDepartment("all", users)
+                  );
                 }}
               />
               <label htmlFor="radio-all" className="filters-inner__label">
@@ -92,10 +120,11 @@ export default function HomePage() {
                       type: "SET_FILTER",
                       payload: item[0],
                     });
-                    appContext.appDispatch({
-                      type: "SET_FILTERED_USERS",
-                      payload: filterByDepartment(event.target.value, users),
-                    });
+                    // фильтрует по состоянию поиска + департамент
+                    handleSearch(
+                      searchState,
+                      filterByDepartment(event.target.value, users)
+                    );
                   }}
                 />
                 <label

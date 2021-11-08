@@ -15,7 +15,8 @@ const initialState = {
   userInfo: {},
   users: [],
   filteredUsers:[],
-  filterState:"all"
+  filterState:"all",
+  searchState:""
 };
 
 function App() {

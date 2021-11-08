@@ -8,6 +8,8 @@ export default function reducer(state, action) {
       return { ...state, filteredUsers: action.payload };
     case "SET_FILTER":
       return { ...state, filterState: action.payload };
+    case "SET_SEARCH":
+      return { ...state, searchState: action.payload };
     default:
       return state;
   }
