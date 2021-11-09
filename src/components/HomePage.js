@@ -1,8 +1,9 @@
 import axios from "axios";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext,useState } from "react";
 import { AppContext } from "../App";
 import UsersListComponent from "./UsersListComponent";
 import ModalSort from "./ModalSort";
+import PreloaderUsers from "./PreloaderUsers";
 import { ReactComponent as SearchSvg } from "../images/search.svg";
 import { ReactComponent as SortSvg } from "../images/sort.svg";
 import {
@@ -14,11 +15,14 @@ import {
 export default function HomePage() {
   const appContext = useContext(AppContext);
   const { users, filterState, searchState, sortBy } = appContext.appState;
+  const [showPreloader,setShowPreloader] = useState(false)
+
 
   useEffect(() => {
     (async () => {
       if (users.length === 0) {
         try {
+          setShowPreloader(true)
           const res = await axios.get(
             "https://stoplight.io/mocks/kode-education/trainee-test/25143926/users"
           );
@@ -32,8 +36,10 @@ export default function HomePage() {
               payload: sortUsers(sortBy, res?.data?.items),
             });
           }
+          setShowPreloader(false)
           // console.log(res?.data?.items);
         } catch (e) {
+          setShowPreloader(false)
           console.log(e);
         }
       }
@@ -156,7 +162,7 @@ export default function HomePage() {
         </div>
       </header>
       <ModalSort />
-      <UsersListComponent />
+      {showPreloader ? <PreloaderUsers/>: <UsersListComponent/>}
     </>
   );
 }
