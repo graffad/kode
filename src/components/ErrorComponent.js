@@ -1,6 +1,6 @@
 export default function ErrorComponent({ type }) {
   return (
-    <div className="error-wrapper">
+    <div className="error">
       {type === "error" ? (
         <>
           <div className="error__emoji"> &#128760;</div>

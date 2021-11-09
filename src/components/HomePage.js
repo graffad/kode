@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useContext,useState } from "react";
+import { useEffect, useContext, useState } from "react";
 import { AppContext } from "../App";
 import UsersListComponent from "./UsersListComponent";
 import ModalSort from "./ModalSort";
@@ -14,21 +14,22 @@ import {
 
 export default function HomePage() {
   const appContext = useContext(AppContext);
-  const { users, filterState, searchState, sortBy } = appContext.appState;
-  const [showPreloader,setShowPreloader] = useState(false)
-
+  const { users, filterState, searchState, sortBy,showPreloader } = appContext.appState;
+  // const [showPreloader, setShowPreloader] = useState(true);
 
   useEffect(() => {
     (async () => {
       if (users.length === 0) {
         try {
-          setShowPreloader(true)
+          // setShowPreloader(true);
           const res = await axios.get(
             "https://stoplight.io/mocks/kode-education/trainee-test/25143926/users",
-            // {headers:{
-            //     'Content-Type': 'application/json',
-            //     'Prefer': 'code=500, example=error-500'
-            //   }}
+            // {
+            //   headers: {
+            //     "Content-Type": "application/json",
+            //     Prefer: "code=500, example=error-500",
+            //   },
+            // }
             // {headers:{
             //     'Content-Type': 'application/json',
             //     'Prefer': 'code=200, dynamic=true'
@@ -44,19 +45,26 @@ export default function HomePage() {
               payload: sortUsers(sortBy, res?.data?.items),
             });
           }
-          setShowPreloader(false)
+          // setShowPreloader(false);
+          appContext.appDispatch({
+            type: "SET_SHOW_PRELOADER",
+            payload: false,
+          });
           appContext.appDispatch({
             type: "SET_ERROR",
             payload: false,
           });
-          // console.log(res?.data?.items);
         } catch (e) {
-          setShowPreloader(false)
           appContext.appDispatch({
             type: "SET_ERROR",
             payload: true,
           });
           console.log(e);
+          // setShowPreloader(false);
+          appContext.appDispatch({
+            type: "SET_SHOW_PRELOADER",
+            payload: false,
+          });
         }
       }
     })();
@@ -104,7 +112,9 @@ export default function HomePage() {
               }}
             />
             <button
-              className="button-open-sort"
+              className={`button-open-sort ${
+                sortBy === "date" ? "active-sort" : ""
+              }`}
               type="button"
               onClick={() => {
                 appContext.appDispatch({
@@ -178,7 +188,7 @@ export default function HomePage() {
         </div>
       </header>
       <ModalSort />
-      {showPreloader ? <PreloaderUsers/>: <UsersListComponent/>}
+      {showPreloader ? <PreloaderUsers /> : <UsersListComponent />}
     </>
   );
 }

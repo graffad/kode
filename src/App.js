@@ -20,6 +20,7 @@ const initialState = {
   sortBy:"alphabet",
   showSort:false,
   isError: false,
+  showPreloader:true
 };
 
 function App() {

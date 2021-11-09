@@ -1,17 +1,17 @@
 import axios from "axios";
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { AppContext } from "../App";
 import { ReactComponent as Arrow } from "../images/arrow.svg";
 import { ReactComponent as Star } from "../images/star.svg";
 import { ReactComponent as Cell } from "../images/cell.svg";
-import { formatDate } from "../stateManagement/functions";
+import { formatDate, departments } from "../stateManagement/functions";
 import ErrorComponent from "./ErrorComponent";
 
 export default function UserProfilePage() {
   const appContext = useContext(AppContext);
   const { userInfo } = appContext.appState;
-  const [preloader, setPreloader] = useState(false);
+  const [preloader, setPreloader] = useState(true);
   const [error, setError] = useState(false);
   const history = useHistory();
   const params = useParams();
@@ -23,7 +23,7 @@ export default function UserProfilePage() {
       // - повторная загрузка и фильтр по id (без dynamic!)
       (async () => {
         try {
-          setPreloader(true);
+          // setPreloader(true);
           const res = await axios.get(
             "https://stoplight.io/mocks/kode-education/trainee-test/25143926/users"
             // {headers:{
@@ -67,7 +67,7 @@ export default function UserProfilePage() {
     }
   }, []);
 
-  if (preloader) {
+  if (preloader && Object.entries(userInfo).length === 0) {
     return <div>loading...</div>;
   }
   if (error) {
@@ -98,25 +98,28 @@ export default function UserProfilePage() {
               {`${userInfo?.firstName} ${userInfo?.lastName}`}
               <span className="user-info__tag">{userInfo?.userTag}</span>
             </h2>
-            <p className="user-info__department">{userInfo?.department}</p>
+            <p className="user-info__department">
+              {
+                // форматировать название департамента в рус.
+                departments
+                  .filter((dep) => dep[0] === userInfo?.department)
+                  .flat()[1]
+              }
+            </p>
           </div>
         </div>
       </header>
       <div className="container">
         <main className="user-contacts-wrapper">
           <div className="user-contacts ">
-            <div className="user-contacts__svg">
               <Star />
-            </div>
             {formatDate(userInfo?.birthday, "full")}
             <span className="user-contacts__years">
               {formatDate(userInfo?.birthday, "count")}
             </span>
           </div>
           <div className="user-contacts">
-            <div className="user-contacts__svg">
               <Cell />
-            </div>
             <a
               className="user-contacts__phone"
               href={`tel:${userInfo?.phone?.replace(/-/g, "")}`}

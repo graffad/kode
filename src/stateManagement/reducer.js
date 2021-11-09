@@ -16,6 +16,8 @@ export default function reducer(state, action) {
       return { ...state, sortBy: action.payload };
     case "SET_ERROR":
       return { ...state, isError: action.payload };
+    case "SET_SHOW_PRELOADER":
+      return { ...state, showPreloader: action.payload };
     default:
       return state;
   }

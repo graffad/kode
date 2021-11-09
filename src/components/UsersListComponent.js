@@ -23,8 +23,7 @@ export default function UsersListComponent() {
   return (
     <section className="section-users">
       <div className="container">
-        {filteredUsers.length > 0
-          ? filteredUsers.map((item, index) => (
+        {filteredUsers.map((item, index) => (
               <div className="users-outer" key={item.id}>
                 {
                   // разделитель ДР (след. год)
@@ -83,7 +82,7 @@ export default function UsersListComponent() {
                 </div>
               </div>
             ))
-          : "loading..."}
+         }
       </div>
     </section>
   );
