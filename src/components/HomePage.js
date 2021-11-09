@@ -24,7 +24,15 @@ export default function HomePage() {
         try {
           setShowPreloader(true)
           const res = await axios.get(
-            "https://stoplight.io/mocks/kode-education/trainee-test/25143926/users"
+            "https://stoplight.io/mocks/kode-education/trainee-test/25143926/users",
+            // {headers:{
+            //     'Content-Type': 'application/json',
+            //     'Prefer': 'code=500, example=error-500'
+            //   }}
+            // {headers:{
+            //     'Content-Type': 'application/json',
+            //     'Prefer': 'code=200, dynamic=true'
+            //   }}
           );
           if (res?.data?.items.length > 0) {
             appContext.appDispatch({
@@ -37,9 +45,17 @@ export default function HomePage() {
             });
           }
           setShowPreloader(false)
+          appContext.appDispatch({
+            type: "SET_ERROR",
+            payload: false,
+          });
           // console.log(res?.data?.items);
         } catch (e) {
           setShowPreloader(false)
+          appContext.appDispatch({
+            type: "SET_ERROR",
+            payload: true,
+          });
           console.log(e);
         }
       }

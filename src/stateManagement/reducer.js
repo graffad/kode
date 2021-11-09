@@ -14,6 +14,8 @@ export default function reducer(state, action) {
       return { ...state, showSort: action.payload };
     case "SET_SORT":
       return { ...state, sortBy: action.payload };
+    case "SET_ERROR":
+      return { ...state, isError: action.payload };
     default:
       return state;
   }

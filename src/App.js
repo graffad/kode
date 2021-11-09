@@ -19,6 +19,7 @@ const initialState = {
   searchState:"",
   sortBy:"alphabet",
   showSort:false,
+  isError: false,
 };
 
 function App() {

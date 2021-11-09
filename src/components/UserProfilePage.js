@@ -6,23 +6,34 @@ import { ReactComponent as Arrow } from "../images/arrow.svg";
 import { ReactComponent as Star } from "../images/star.svg";
 import { ReactComponent as Cell } from "../images/cell.svg";
 import { formatDate } from "../stateManagement/functions";
+import ErrorComponent from "./ErrorComponent";
 
 export default function UserProfilePage() {
   const appContext = useContext(AppContext);
   const { userInfo } = appContext.appState;
   const [preloader, setPreloader] = useState(false);
-
+  const [error, setError] = useState(false);
   const history = useHistory();
   const params = useParams();
 
   useEffect(() => {
     if (Object.entries(userInfo).length === 0) {
-      // при обновления страницы - повторная загрузка (без dynamic!)
+      // при переходе с главной - данные из стора
+      // при обновлении страницы -
+      // - повторная загрузка и фильтр по id (без dynamic!)
       (async () => {
         try {
           setPreloader(true);
           const res = await axios.get(
             "https://stoplight.io/mocks/kode-education/trainee-test/25143926/users"
+            // {headers:{
+            //     'Content-Type': 'application/json',
+            //     'Prefer': 'code=500, example=error-500'
+            //   }}
+            // {headers:{
+            //     'Content-Type': 'application/json',
+            //     'Prefer': 'code=200, dynamic=true'
+            //   }}
           );
           if (res?.data?.items.length > 0) {
             const user = res.data.items.filter(
@@ -46,7 +57,9 @@ export default function UserProfilePage() {
             });
           }
           setPreloader(false);
+          setError(false);
         } catch (e) {
+          setError(true);
           setPreloader(false);
           console.log(e);
         }
@@ -56,6 +69,12 @@ export default function UserProfilePage() {
 
   if (preloader) {
     return <div>loading...</div>;
+  }
+  if (error) {
+    return <ErrorComponent type="error" />;
+  }
+  if (!preloader && Object.entries(userInfo).length === 0) {
+    return <ErrorComponent type="not-found" />;
   }
 
   return (

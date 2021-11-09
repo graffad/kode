@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { AppContext } from "../App";
+import ErrorComponent from "./ErrorComponent";
 import {
   formatDate,
   departments,
@@ -9,8 +10,15 @@ import {
 
 export default function UsersListComponent() {
   const appContext = useContext(AppContext);
-  const { filteredUsers, sortBy } = appContext.appState;
+  const { filteredUsers, sortBy, isError } = appContext.appState;
   const history = useHistory();
+
+  if(isError){
+    return <ErrorComponent type="error" />
+  }
+  if(filteredUsers.length === 0){
+    return <ErrorComponent type="not-found" />
+  }
 
   return (
     <section className="section-users">
