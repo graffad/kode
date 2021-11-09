@@ -16,7 +16,9 @@ const initialState = {
   users: [],
   filteredUsers:[],
   filterState:"all",
-  searchState:""
+  searchState:"",
+  sortBy:"alphabet",
+  showSort:false,
 };
 
 function App() {

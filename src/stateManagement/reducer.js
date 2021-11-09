@@ -10,6 +10,10 @@ export default function reducer(state, action) {
       return { ...state, filterState: action.payload };
     case "SET_SEARCH":
       return { ...state, searchState: action.payload };
+    case "SET_SHOW_SORT":
+      return { ...state, showSort: action.payload };
+    case "SET_SORT":
+      return { ...state, sortBy: action.payload };
     default:
       return state;
   }

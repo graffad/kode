@@ -40,7 +40,7 @@ function formatDate(date,type="short") {
 
 
 }
-
+// для соответствия по макету
  const departments = [
   ["android", "Android"],
   ["ios", "iOS"],
@@ -66,9 +66,71 @@ function filterByDepartment(filter, users) {
 }
 
 
+function sortUsers(sortValue, arr) {
+  function getMonth(date) {
+    return new Date(date).getMonth();
+  }
+  function getDate(date) {
+    return new Date(date).getDate();
+  }
+
+  const sortCopy = [...arr];
+  // ПО АЛФАВИТУ
+  if (sortValue === "alphabet") {
+    sortCopy.sort((a, b) => (a.firstName > b.firstName ? 1 : -1));
+    return sortCopy;
+  }
+  // ПО ДНЮ РОЖДЕНИЯ
+
+  // разделить на массивы
+  const now = new Date();
+  const closest = [];
+  const nextYear = [];
+
+  // распределить в каждый
+  sortCopy.forEach((item) => {
+    if (getMonth(item.birthday) >= getMonth(now)) {
+      if (getDate(item.birthday) > getDate(now)) {
+        closest.push(item);
+      } else {
+        nextYear.push(item);
+      }
+    } else {
+      nextYear.push(item);
+    }
+  });
+
+  // отсортировать каждый
+  closest.sort(
+    (a, b) =>
+      getMonth(a.birthday) - getMonth(b.birthday) ||
+      getDate(a.birthday) - getDate(b.birthday)
+  );
+  nextYear.sort(
+    (a, b) =>
+      getMonth(a.birthday) - getMonth(b.birthday) ||
+      getDate(a.birthday) - getDate(b.birthday)
+  );
+  // собрать
+  return closest.concat(nextYear);
+}
+
+// найти первый индекс для разделителя по дате (след. год)
+function dividingYearLineIndex(filteredUsers) {
+  const now = new Date();
+  return filteredUsers.findIndex(
+    (item) =>
+      new Date(item.birthday).getMonth() < now.getMonth() ||
+      new Date(item.birthday).getDate() < now.getDate()
+  );
+}
+
+
 
 module.exports = {
   formatDate,
   departments,
-  filterByDepartment
+  filterByDepartment,
+  sortUsers,
+  dividingYearLineIndex
 };

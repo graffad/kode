@@ -2,13 +2,18 @@ import axios from "axios";
 import { useEffect, useContext } from "react";
 import { AppContext } from "../App";
 import UsersListComponent from "./UsersListComponent";
+import ModalSort from "./ModalSort";
 import { ReactComponent as SearchSvg } from "../images/search.svg";
 import { ReactComponent as SortSvg } from "../images/sort.svg";
-import { departments, filterByDepartment } from "../stateManagement/functions";
+import {
+  departments,
+  filterByDepartment,
+  sortUsers,
+} from "../stateManagement/functions";
 
 export default function HomePage() {
   const appContext = useContext(AppContext);
-  const { users, filterState, searchState } = appContext.appState;
+  const { users, filterState, searchState, sortBy } = appContext.appState;
 
   useEffect(() => {
     (async () => {
@@ -24,7 +29,7 @@ export default function HomePage() {
             });
             appContext.appDispatch({
               type: "SET_FILTERED_USERS",
-              payload: res?.data?.items,
+              payload: sortUsers(sortBy, res?.data?.items),
             });
           }
           // console.log(res?.data?.items);
@@ -72,11 +77,20 @@ export default function HomePage() {
               onChange={(event) => {
                 handleSearch(
                   event.target.value,
-                  filterByDepartment(filterState, users)
+                  sortUsers(sortBy, filterByDepartment(filterState, users))
                 );
               }}
             />
-            <button className="button-open-sort" type="button">
+            <button
+              className="button-open-sort"
+              type="button"
+              onClick={() => {
+                appContext.appDispatch({
+                  type: "SET_SHOW_SORT",
+                  payload: true,
+                });
+              }}
+            >
               <SortSvg />
             </button>
           </div>
@@ -94,10 +108,10 @@ export default function HomePage() {
                     type: "SET_FILTER",
                     payload: "all",
                   });
-                  // фильтрует по состоянию поиска + департамент
+                  // фильтрует по состоянию поиска + департамент + сорт
                   handleSearch(
                     searchState,
-                    filterByDepartment("all", users)
+                    sortUsers(sortBy, filterByDepartment("all", users))
                   );
                 }}
               />
@@ -120,10 +134,13 @@ export default function HomePage() {
                       type: "SET_FILTER",
                       payload: item[0],
                     });
-                    // фильтрует по состоянию поиска + департамент
+                    // фильтрует по состоянию поиска + департамент + сорт
                     handleSearch(
                       searchState,
-                      filterByDepartment(event.target.value, users)
+                      sortUsers(
+                        sortBy,
+                        filterByDepartment(event.target.value, users)
+                      )
                     );
                   }}
                 />
@@ -138,6 +155,7 @@ export default function HomePage() {
           </nav>
         </div>
       </header>
+      <ModalSort />
       <UsersListComponent />
     </>
   );

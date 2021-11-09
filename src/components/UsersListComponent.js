@@ -1,19 +1,36 @@
 import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { AppContext } from "../App";
-import { formatDate } from "../stateManagement/functions";
+import {
+  formatDate,
+  departments,
+  dividingYearLineIndex,
+} from "../stateManagement/functions";
 
 export default function UsersListComponent() {
   const appContext = useContext(AppContext);
-  const { users, filteredUsers } = appContext.appState;
+  const { filteredUsers, sortBy } = appContext.appState;
   const history = useHistory();
 
   return (
     <section className="section-users">
       <div className="container">
         {filteredUsers.length > 0
-          ? filteredUsers.map((item) => (
+          ? filteredUsers.map((item, index) => (
               <div className="users-outer" key={item.id}>
+                {
+                  // разделитель ДР (след. год)
+                  filteredUsers.length > 0 &&
+                  sortBy === "date" &&
+                  index === dividingYearLineIndex(filteredUsers) ? (
+                    <div className="dividing-line">
+                      <span>{new Date().getFullYear() + 1}</span>
+                    </div>
+                  ) : (
+                    ""
+                  )
+                }
+
                 <div
                   className="users-inner"
                   onClick={() => {
@@ -35,11 +52,25 @@ export default function UsersListComponent() {
                       </span>
                     </p>
                     <p className="users-inner__info-department">
-                      {item.department}
+                      {
+                        // форматировать название департамента в рус.
+                        departments
+                          .filter((dep) => dep[0] === item.department)
+                          .flat()[1]
+                      }
                     </p>
                   </div>
                   <div className="users-inner__date">
-                    {formatDate(item.birthday)}
+                    {
+                      // показывать др в зависимости от сорт.
+                      sortBy === "date" ? (
+                        <div className="users-inner__date">
+                          {formatDate(item.birthday)}
+                        </div>
+                      ) : (
+                        ""
+                      )
+                    }
                   </div>
                 </div>
               </div>
