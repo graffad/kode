@@ -90,14 +90,13 @@ function sortUsers(sortValue, arr) {
   // распределить в каждый
   sortCopy.forEach((item) => {
     if (getMonth(item.birthday) >= getMonth(now)) {
-      if (getDate(item.birthday) > getDate(now)) {
+      if (
+        getDate(item.birthday) >= getDate(now) ||
+        getMonth(item.birthday) > getMonth(now)
+      ) {
         closest.push(item);
-      } else {
-        nextYear.push(item);
-      }
-    } else {
-      nextYear.push(item);
-    }
+      } else nextYear.push(item);
+    } else nextYear.push(item);
   });
 
   // отсортировать каждый
@@ -120,8 +119,7 @@ function dividingYearLineIndex(filteredUsers) {
   const now = new Date();
   return filteredUsers.findIndex(
     (item) =>
-      new Date(item.birthday).getMonth() < now.getMonth() ||
-      new Date(item.birthday).getDate() < now.getDate()
+      new Date(item.birthday).getMonth() < now.getMonth()
   );
 }
 
