@@ -7,6 +7,7 @@ import {
   departments,
   dividingYearLineIndex,
 } from "../stateManagement/functions";
+import logo from "../images/logo.png"
 
 export default function UsersListComponent() {
   const appContext = useContext(AppContext);
@@ -49,6 +50,10 @@ export default function UsersListComponent() {
                     className="users-inner__image"
                     src={item.avatarUrl}
                     alt={item.lastName}
+                    onError={(e) => {
+                      e.target.onerror = null
+                      e.target.src = logo;
+                    }}
                   />
 
                   <div className="users-inner__info">

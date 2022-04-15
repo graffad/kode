@@ -7,6 +7,8 @@ import { ReactComponent as Star } from "../images/star.svg";
 import { ReactComponent as Cell } from "../images/cell.svg";
 import { formatDate, departments } from "../stateManagement/functions";
 import ErrorComponent from "./ErrorComponent";
+import logo from "../images/logo.png"
+
 
 export default function UserProfilePage() {
   const appContext = useContext(AppContext);
@@ -93,6 +95,10 @@ export default function UserProfilePage() {
               className="user-info__img"
               src={userInfo?.avatarUrl}
               alt={userInfo?.lastName}
+              onError={(e) => {
+                e.target.onerror = null
+                e.target.src = logo;
+              }}
             />
             <h2>
               {`${userInfo?.firstName} ${userInfo?.lastName}`}
