@@ -125,7 +125,7 @@ function dividingYearLineIndex(filteredUsers) {
 
 
 
-module.exports = {
+export {
   formatDate,
   departments,
   filterByDepartment,
